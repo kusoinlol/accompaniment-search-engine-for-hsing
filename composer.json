@@ -1,0 +1,33 @@
+{
+    "name"       : "anthony/hsing",
+    "type"       : "project",
+    "description": "歡歌工具",
+    "authors"    : [
+        {
+            "name": "Anthony",
+            "email": "Anthony_hsiao@hiiir.com",
+            "role": "Developer"
+        }
+    ],
+    "keywords": ["api"],
+    "license" : "proprietary",
+    "minimum-stability": "dev",
+    "repositories": [],
+    "require": {},
+    "require-dev": {},
+    "autoload": {},
+    "archive": {
+        "exclude": [
+            "!vendor",
+            "!node_modules",
+            "/tests",
+            "/build",
+            "/docs",
+            "/*.xml",
+            "/*.phar",
+            "/*.yml",
+            "/*.lock",
+            "/publish*.sh"
+        ]
+    }
+}
