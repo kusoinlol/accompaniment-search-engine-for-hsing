@@ -1,20 +1,19 @@
 <?php
+
 if (file_exists(ROOT_PATH . 'vendor/autoload.php')) {
     include_once ROOT_PATH . 'vendor/autoload.php';
 }
 
 $loader = new \Phalcon\Loader();
 
-$loader->registerDirs(
-    [
-        PATH_APP . '/tasks/'
-    ]
-)->register();
+$loader->registerDirs([APP_PATH . '/tasks/'])->register();
 
 $loader->registerNamespaces(
     [
-     "redis" => PATH_APP . "model/cache/redis",
+     'Anthony\Hsing\Controller'     => APP_PATH . '/controller/',
+     'Anthony\Hsing\Controller\Api' => APP_PATH . '/controller/api/',
+     'Anthony\Hsing\Task'           => APP_PATH . "/tasks",
     ]
 )->register();
+
 return $loader;
-?>

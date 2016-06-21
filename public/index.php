@@ -1,41 +1,28 @@
 <?php
-
-// for php built-in server
-if (!isset($_GET['_url'])) {
-  $_GET['_url'] = str_replace('/api/v3', "", $_SERVER['SCRIPT_NAME']);
-}
-// remote code coverage
-$env = !get_cfg_var("APPLICATION_ENV") ?
-    getenv("APPLICATION_ENV") : get_cfg_var("APPLICATION_ENV");
-
-if ("development" == $env || empty($env)) {
-    include __DIR__ . "/../c3.php";
-}
-
-use Phalcon\Mvc\Application;
-use Phalcon\Http\Response;
-use Phalpro\HttpException;
-use Phalcon\Mvc\Url as UrlResolver;
 use Phalcon\DI\FactoryDefault;
 use Phalcon\Http\Request;
-use Phalcon\Mvc\View;
+use Phalcon\Http\Response;
+use Phalcon\Mvc\Application;
+use \Phalcon\Mvc\View;
 
 try {
+
     date_default_timezone_set("Asia/Taipei");
+
     $config = include __DIR__ . '/../app/config/define.php';
 
     // Read auto-loader
-    $loader = include PATH_APP . '/config/loader.php';
-    
+    $loader = include APP_PATH . '/config/loader.php';
+
     // Read the configuration
-    $config = include PATH_APP . '/config/config.php';
+    $config = include APP_PATH . '/config/config.php';
 
     // Read routes
-    $router = include PATH_APP . '/config/router.php';
+    $router = include APP_PATH . '/config/router.php';
 
     // Read services
     $di = new FactoryDefault();
-    include PATH_APP . '/config/service.php';
+    include APP_PATH . '/config/services.php';
 
     // Setting
     $di->set('config', $config);
@@ -44,31 +31,30 @@ try {
 
     $request = new Request();
     $di->set("request", $request);
+
     $response = new Response();
     $response->setContentType("application/json", "UTF-8");
-    $response->setHeader("Access-Control-Allow-Origin", "*");
-    $response->setHeader("Access-Control-Allow-Headers", "Content-Type, APPKEY, AUTHORIZATION");
-    $response->setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT, PATCH, OPTIONS");
     $di->set("response", $response);
+    // Setting up the view component
+    if (SUB_PATH == "webapp/") {
+        $di->set('view', function () use ($config) {
+            $view = new \Phalcon\Mvc\View();
+            $view->setViewsDir(APP_PATH . 'views/');
+            $view->registerEngines(array(
+                '.phtml' => 'Phalcon\Mvc\View\Engine\Php',
+            ));
+            return $view;
+        }, true);
+
+        // Handle the request
+        $application = new \Phalcon\Mvc\Application($di);
+        echo $application->handle()->getContent();
+        exit();
+    } //end if
 
     // Handle the request
-    $application = new \Phalcon\Mvc\Application($di);
-
-    // Setting up the view component
+    $application = new Application($di);
     $application->useImplicitView(false);
-    $di->getResponse()->setContentType("application/json", "UTF-8");
     echo $application->handle()->getContent();
 } catch (Exception $e) {
-    if (strpos($e->getMessage(), "Duplicate") !== false) {
-        $response = new stdClass();
-        $response->register = "Duplicate Token";
-        $response->status = "ok";
-        $response->create = false;
-        \Hiiir\Helper\APIHelper::addHeader(200);
-        \Hiiir\Helper\APIHelper::output($response, "JSON");
-        return $response;
-    } else {
-        \Hiiir\Helper\APIHelper::exceptionHandler($e);
-    }
-}//end try
-?>
+} //end try

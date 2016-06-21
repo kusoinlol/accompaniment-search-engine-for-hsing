@@ -1,6 +1,9 @@
 <?php
-
-$config = new Phalcon\Config\Adapter\Yaml(PATH_APP."config/config.yml");
+try {
+    $config = new Phalcon\Config\Adapter\Yaml(APP_PATH . "config/config.yml");
+} catch (Exception $e) {
+    echo $e->getMessage();
+}
 
 return $config;
 ?>
