@@ -22,8 +22,8 @@ try {
 
     // Read services
     $di = new FactoryDefault();
-    include APP_PATH . '/config/services.php';
-
+    include APP_PATH . '/config/service.php';
+    
     // Setting
     $di->set('config', $config);
     $di->set('loader', $loader);

@@ -2,7 +2,10 @@
 $router = new Phalcon\Mvc\Router(false);
 
 include __DIR__ . '/router/ApiRouter.php';
+include __DIR__ . '/router/SongListRouter.php';
+
 $router->mount(new ApiRouter());
+$router->mount(new SongListRouter());
 
 $router->notFound(
     [

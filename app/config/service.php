@@ -28,8 +28,10 @@ $di->set(
              "username" => $config->database->username,
              "password" => $config->database->password,
              "dbname"   => $config->database->dbname,
+             "options"  => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'),
             )
         );
+        
         $dbEventsManager = new EventsManager();
         $dbEventsManager->attach(
             'db:beforeQuery',
@@ -40,6 +42,19 @@ $di->set(
         $connection->setEventsManager($dbEventsManager);
 
         return $connection;
+    }
+);
+
+
+$di->set(
+    "redis",
+    function () use ($config) {
+        $host  = $config->redis->host;
+        $port  = $config->redis->port;
+        $redis = new Redis();
+        $redis->connect($host, $port);
+
+        return $redis;
     }
 );
 

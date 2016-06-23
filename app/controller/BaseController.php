@@ -1,6 +1,6 @@
 <?php
 
-namespace Anthony\Hsing\Controller\Api;
+namespace Anthony\Hsing\Controller;
 
 use ReflectionClass;
 

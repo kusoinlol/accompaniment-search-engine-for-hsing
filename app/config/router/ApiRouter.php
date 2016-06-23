@@ -30,6 +30,14 @@ class ApiRouter extends Phalcon\Mvc\Router\Group
              'action'     => 'demo',
             ]
         );
+
+        $this->addGet(
+            '/123',
+            [
+             'controller' => 'Test',
+             'action'     => '123',
+            ]
+        );
         
     }
 }
